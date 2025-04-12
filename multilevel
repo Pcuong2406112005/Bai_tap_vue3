@@ -1,0 +1,54 @@
+<script setup>
+import {ref} from 'vue';
+const falculties=ref([
+  {
+    tennganh:'CNTT',
+    caclop:[
+      {
+        lop:'CN01',
+        students:[
+          {name:'Phan Mạnh Cường',age:20}
+        ]
+      },
+      {
+        lop:'CN02',
+        students:[
+          {name:'Lê Doãn Kiên Trung',age:20}
+        ]
+      }
+    ]
+  },
+  {
+    tennganh:'CNDPT',
+    caclop:[
+      {
+        lop:'PT01',
+        students:[
+          {name:'Nguyễn Tuấn Dũng',age:20}
+        ]
+      },
+      {
+        lop:'PT02',
+        students:[
+          {name:'Lê Quốc Dũng',age:20}
+        ]
+      }
+    ]
+  }
+]);
+</script>
+<template>
+  <button @click="">Tạo Lớp</button>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>Lớp</th>
+        <th>Thao Tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+    </tbody>
+  </table>
+</template>
