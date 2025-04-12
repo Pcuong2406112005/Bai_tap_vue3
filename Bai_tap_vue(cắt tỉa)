@@ -1,0 +1,99 @@
+<script setup>
+  import {ref,computed,watch} from 'vue';
+  const currentscreen=ref('list');
+  const students=ref(
+    [{name:'Phan Mạnh Cường',age:20,class:'CN03'},
+      {name:'Lê Doãn Kiên Trung',age:20,class:'CN01'},
+      {name:'Lê Quốc Dũng',age:20,class:'PT01'},
+      {name:'Nguyễn Tuấn Dũng',age:20,class:'CN04'},
+    ]
+);
+  const themhocsinh=ref({
+    name:'',age:null,class:''
+  }
+  );
+  const addhocsinh=()=>{
+    if(themhocsinh.value.class&&themhocsinh.value.name&&themhocsinh.value.age){
+      students.value.push({...themhocsinh.value});
+      themhocsinh.value.name='';
+      themhocsinh.value.age=null;
+      themhocsinh.value.class='';
+      currentscreen.value='list';
+    }
+  };
+const savedstudent=localStorage.getItem('students');
+if(savedstudent){
+  students.value=JSON.parse(savedstudent);  
+}
+watch(students,(newValue)=>{
+  localStorage.setItem('students',JSON.stringify(newValue));
+},{deep:true}
+);
+const xoahocsinh=(index)=>{
+  students.value.splice(index,1);
+}
+const fhocsinh=ref({
+  name:'',age:null,class:''
+});
+const editindex=ref(null);
+const capnhathocsinh=(index)=>{
+  students.value[index]={...fhocsinh.value};
+  editindex.value=null;
+};
+const suachuahocsinh=(index)=>{
+  editindex.value=index;
+  fhocsinh.value={...students.value[index]};
+};
+const timkiem=ref('');
+const findstudent=computed(() => {
+  if(!timkiem.value) return null;
+  return students.value.find(
+    (student)=>student.name==timkiem.value
+  );
+})
+</script>
+<template>
+  <div v-if="currentscreen==='list'">
+    <button @click="currentscreen='add'">Thêm Học Sinh</button>
+  <div>
+    <table border="1">
+    <thead>
+      <tr>
+        <th>Họ Tên</th>
+        <th>Tuổi</th>
+        <th>Lớp</th>
+        <th>Thao Tác</th>
+      </tr>
+    </thead>  
+      <tbody>
+        <tr v-for="(student,index) in students" :key="index">
+          <td v-if="index!==editindex">{{ student.name }}</td>
+          <td v-else><input v-model="fhocsinh.name"></td>
+          <td v-if="index!==editindex">{{ student.age }}</td>
+          <td v-else><input v-model="fhocsinh.age"></td>
+          <td v-if="index!==editindex">{{ student.class }}</td>
+          <td v-else><input v-model="fhocsinh.class"></td>
+          <td>
+            <button @click="index===editindex?capnhathocsinh(index):suachuahocsinh(index)">{{editindex===index?'Cập Nhật':'Sửa Chữa'}}</button>
+            <button @click="xoahocsinh(index)">Xóa</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <input type="search" v-model.trim="timkiem" placeholder="Nhập Tên Học Sinh Cần Tìm">
+    <div v-if="findstudent">
+      <p><strong>Học Sinh đã được tìm thấy</strong></p>
+      <p>Họ Tên:{{ findstudent.name }}</p>
+      <p>Lớp:{{ findstudent.class }}</p>
+      <p>Tuổi:{{ findstudent.age }}</p>
+    </div>
+    <div v-else>Không tìm thấy học sinh có tên đã nhập</div>
+  </div>
+</div>
+<div v-if="currentscreen==='add'">
+  <input v-model="themhocsinh.name" placeholder="Họ Tên"><br>
+  <input v-model="themhocsinh.age" placeholder="Tuổi"><br>
+  <input v-model="themhocsinh.class" placeholder="Lớp"><br>
+  <button @click="addhocsinh">Lưu</button>
+</div>
+</template>
